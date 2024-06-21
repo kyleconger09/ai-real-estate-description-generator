@@ -11,17 +11,18 @@ import MultiImageUpload from "@/components/Landing/MultiImageUpload";
 import NextButton from "@/components/Landing/NextButton";
 import DescriptionParameters from "@/components/Landing/DescriptionParameters";
 import DescriptionArea from "@/components/Landing/DescriptionArea";
+import GoogleMap from "@/components/Landing/GoogleMap";
 
 export default function HomeClient() {
   const [address, setAddress] = useState("");
   const [unitNumber, setUnitNumber] = useState(1);
-  const [listingTarget, setListingTarget] = useState(null);
+  const [listingTarget, setListingTarget] = useState("for_sale");
   const [listingStatus, setListingStatus] = useState("new listing");
   const [uploadedImages, setUploadedImages] = useState([]);
-  const [showPropertyComponent, setShowPropertyComponent] = useState(false);
+  const [showPropertyComponent, setShowPropertyComponent] = useState(true);
   const [showDescriptionComponent, setshowDescriptionComponent] =
     useState(false);
-  const [buttonString, setButtonString] = useState("Next");
+  const [buttonString, setButtonString] = useState("Generate");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleClose = (event, reason) => {
@@ -32,14 +33,15 @@ export default function HomeClient() {
   };
 
   const handleInitialListing = () => {
-    setShowPropertyComponent(false);
+    setShowPropertyComponent(true);
     setshowDescriptionComponent(false);
     setAddress("");
     setUnitNumber(1);
-    setListingTarget(null);
+    setListingTarget("for_sale");
     setListingStatus("new listing");
     setUploadedImages([]);
-    setButtonString("Next");
+    setButtonString("Generate");
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNextStep = () => {
@@ -61,7 +63,7 @@ export default function HomeClient() {
         sx={{
           backgroundColor: "lightgray",
           display: "flex",
-          paddingTop: 10,
+          paddingTop: 4,
           paddingBottom: 10,
         }}
       >
@@ -91,7 +93,6 @@ export default function HomeClient() {
               />
             </Grid>
           </Grid>
-          {showPropertyComponent && (
             <Grid
               container
               columnSpacing={2}
@@ -105,10 +106,12 @@ export default function HomeClient() {
                 <PropertyHighlight />
               </Grid>
               <Grid item sm={12}>
+                <GoogleMap address={address} />
+              </Grid>
+              <Grid item sm={12}>
                 <DescriptionParameters />
               </Grid>
             </Grid>
-          )}
           {showDescriptionComponent && (
             <Grid container sx={{ marginTop: 2 }}>
               <Grid item xs={12}>

@@ -20,14 +20,14 @@ export default function CopyExtractButtonGroup({ handleCopy, handleDownload }) {
         color="primary"
         size="large"
         sx={{
-          minWidth: "180px",
+          minWidth: "140px",
           backgroundColor: "#2C4552",
           "&:hover": {
             backgroundColor: "#ff7100", // Replace this with your desired hover color
           },
         }}
       >
-        Copy description
+        Copy
       </Button>
       <Button
         variant="contained"
@@ -35,14 +35,14 @@ export default function CopyExtractButtonGroup({ handleCopy, handleDownload }) {
         color="primary"
         size="large"
         sx={{
-          minWidth: "180px",
+          minWidth: "140px",
           backgroundColor: "#2C4552",
           "&:hover": {
             backgroundColor: "#ff7100", // Replace this with your desired hover color
           },
         }}
       >
-        Dowonload as PDF
+        Dowonload
       </Button>
     </Stack>
   );

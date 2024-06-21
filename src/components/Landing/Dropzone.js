@@ -39,6 +39,7 @@ const dropzoneStyle = {
   borderRadius: "5px",
   padding: "20px",
   width: "80%",
+  cursor: "pointer",
   textAlign: "center",
   marginBottom: "20px",
   margin: "auto",
