@@ -38,23 +38,7 @@ const writingStyleList = [
   { value: "imaginative", label: "Creatvie/Imaginative" },
 ];
 
-export default function DescriptionParameters() {
-  const [language, setLanguage] = useState("EN-US");
-  const [descriptionUnit, setDescriptionUnit] = useState("word");
-  const [writingStyle, setWritingStyle] = useState("traditional");
-
-  const handleChangeLanguage = (event) => {
-    setLanguage(event.target.value);
-  };
-
-  const handleChangeDescriptionUnit = (event) => {
-    setDescriptionUnit(event.target.value);
-  };
-
-  const handleChangeWritingStyle = (event) => {
-    setWritingStyle(event.target.value);
-  };
-
+export default function DescriptionParameters(props) {
   return (
     <Card sx={{ borderRadius: 4, boxShadow: 3, padding: 2 }}>
       <Grid container rowSpacing={2} columnSpacing={2}>
@@ -67,8 +51,8 @@ export default function DescriptionParameters() {
             Language
           </Typography>
           <Select
-            value={language}
-            onChange={handleChangeLanguage}
+            value={props.language}
+            onChange={(e) => props.setLanguage(e.target.value)}
             displayEmpty
             inputProps={{ "aria-label": "Without label" }}
             sx={{
@@ -94,16 +78,18 @@ export default function DescriptionParameters() {
           <Grid container sx={{ marginTop: 2 }} columnSpacing={2}>
             <Grid item xs={12} sm={12} md={6} sx={{ marginTop: 0.2 }}>
               <TextField
+                value={props.descriptionLength}
+                onChange={(e) => props.setDescriptionLength(e.target.value)}
                 fullWidth
                 label="Length"
                 variant="outlined"
-                placeholder="Enter a location"
+                placeholder="Enter a Description Length"
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6} sx={{ marginTop: -1 }}>
               <Select
-                value={descriptionUnit}
-                onChange={handleChangeDescriptionUnit}
+                value={props.descriptionUnit}
+                onChange={(e) => setDescriptionUnit(e.target.value)}
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
                 sx={{
@@ -126,8 +112,8 @@ export default function DescriptionParameters() {
             AI Writing Style
           </Typography>
           <Select
-            value={writingStyle}
-            onChange={handleChangeWritingStyle}
+            value={props.descriptionWritingStyle}
+            onChange={(e) => props.setDescriptionWritingStyle(e.target.value)}
             displayEmpty
             inputProps={{ "aria-label": "Without label" }}
             sx={{

@@ -16,8 +16,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-export default function PropertyHighlight() {
-  const [propertyType, setPropertyType] = React.useState("");
+export default function PropertyHighlight(props) {
   const [highlights, setHighlights] = useState([
     "Renovation potential",
     "Lot size",
@@ -31,13 +30,9 @@ export default function PropertyHighlight() {
     "Basement",
     "Rental income",
   ]);
-  const [selected, setSelected] = useState([]);
+
   const [adding, setAdding] = useState(false);
   const [newHighlight, setNewHighlight] = useState("");
-
-  const handleChange = (event) => {
-    setPropertyType(event.target.value);
-  };
 
   const handleAddClick = () => {
     setAdding(true);
@@ -51,7 +46,10 @@ export default function PropertyHighlight() {
     if (event.key === "Enter") {
       if (newHighlight.trim() !== "") {
         setHighlights([...highlights, newHighlight]);
-        setSelected([...selected, newHighlight]);
+        props.setSelectedHightlights([
+          ...props.selectedHighlights,
+          newHighlight,
+        ]);
         setNewHighlight("");
         setAdding(false);
       }
@@ -59,7 +57,7 @@ export default function PropertyHighlight() {
   };
 
   const handleHighlightClick = (highlight) => {
-    setSelected((prev) =>
+    props.setSelectedHightlights((prev) =>
       prev.includes(highlight)
         ? prev.filter((item) => item !== highlight)
         : [...prev, highlight]
@@ -89,13 +87,15 @@ export default function PropertyHighlight() {
               label={highlight}
               onClick={() => handleHighlightClick(highlight)}
               sx={{
-                backgroundColor: selected.includes(highlight)
+                backgroundColor: props.selectedHighlights.includes(highlight)
                   ? "#ff7100"
                   : "white",
-                color: selected.includes(highlight) ? "#2C4552" : "default",
+                color: props.selectedHighlights.includes(highlight)
+                  ? "#2C4552"
+                  : "default",
                 border: "1px solid #ccc",
                 "&:hover": {
-                  backgroundColor: selected.includes(highlight)
+                  backgroundColor: props.selectedHighlights.includes(highlight)
                     ? "#ff7100"
                     : "white",
                 },
@@ -141,8 +141,8 @@ export default function PropertyHighlight() {
           <RadioGroup
             aria-label="property-type"
             name="property-type"
-            value={propertyType}
-            onChange={handleChange}
+            value={props.propertyType}
+            onChange={(e) => props.setPropertyType(e.target.value)}
           >
             <Grid container rowSpacing={0} columnSpacing={2}>
               <Grid item xs={6} sm={4}>

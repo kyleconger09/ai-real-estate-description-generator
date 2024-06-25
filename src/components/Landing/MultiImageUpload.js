@@ -9,10 +9,15 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Dropzone from "./Dropzone";
 import api from "../../utils/axios";
 import ImageModal from "./ImageModal";
-import { ImageList, ImageListItem, Container } from "@mui/material";
+import {
+  ImageList,
+  ImageListItem,
+  Container,
+  FormHelperText,
+} from "@mui/material";
 
 const MultiImageUpload = (props) => {
-  const { uploadedImages, setUploadedImages } = props;
+  const { uploadedImages, setUploadedImages, formErrors } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const theme = useTheme();
@@ -65,6 +70,13 @@ const MultiImageUpload = (props) => {
         }}
       ></CardHeader>
       <Dropzone onUpload={handleUpload} />
+      {formErrors.uploadedImages && (
+        <FormHelperText
+          sx={{ color: "red", display: "flex", justifyContent: "center" }}
+        >
+          Please upload Images.
+        </FormHelperText>
+      )}
       <Container
         sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
       >

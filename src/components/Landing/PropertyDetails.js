@@ -8,7 +8,8 @@ import {
   Select,
   InputAdornment,
   Box,
-  Grid,
+  FormControl,
+  FormHelperText,
 } from "@mui/material";
 
 const currencies = [
@@ -33,37 +34,7 @@ const interiorUnits = [
   { value: "sqMeters", label: "Sq Meters" },
 ];
 
-export default function PropertyDetails() {
-  const [currency, setCurrency] = React.useState("USD");
-  const [price, setPrice] = React.useState();
-  const [lotUnit, setLotUnit] = useState("sqFeet");
-  const [lotSize, setLotSize] = useState();
-  const [interiorUnit, setInteriorUnit] = useState("sqFeet");
-  const [interiorSize, setInteriorSize] = useState();
-
-  const handleCurrencyChange = (event) => {
-    setCurrency(event.target.value);
-  };
-
-  const handlePriceChange = (event) => {
-    setPrice(event.target.value);
-  };
-
-  const handleLotUnitChange = (event) => {
-    setLotUnit(event.target.value);
-  };
-
-  const handleLotSizeChange = (event) => {
-    setInteriorSize(event.target.value);
-  };
-
-  const handleInteriorUnitChange = (event) => {
-    setInteriorUnit(event.target.value);
-  };
-
-  const handleInteriorSizeChange = (event) => {
-    setLotSize(event.target.value);
-  };
+export default function PropertyDetails(props) {
   return (
     <Card
       sx={{
@@ -83,8 +54,8 @@ export default function PropertyDetails() {
         <Box display="flex" alignItems="center">
           <Select
             sx={{ borderRadius: 0, width: "25%" }}
-            value={currency}
-            onChange={handleCurrencyChange}
+            value={props.currency}
+            onChange={(e) => props.setCurrency(e.target.value)}
             displayEmpty
             inputProps={{ "aria-label": "Without label" }}
             renderValue={(selected) => {
@@ -106,12 +77,15 @@ export default function PropertyDetails() {
           <TextField
             type="number"
             placeholder="Price (optional)"
-            value={price}
-            onChange={handlePriceChange}
+            value={props.price}
+            onChange={(e) => props.setPrice(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  {currencies.find((cur) => cur.value === currency)?.symbol}
+                  {
+                    currencies.find((cur) => cur.value === props.currency)
+                      ?.symbol
+                  }
                 </InputAdornment>
               ),
             }}
@@ -123,26 +97,46 @@ export default function PropertyDetails() {
             }}
           />
         </Box>
-        <TextField
-          fullWidth
-          label="Bedrooms"
-          variant="outlined"
-          placeholder="Bedrooms"
-          sx={{ marginTop: 2 }}
-        />
-        <TextField
-          fullWidth
-          label="Bathrooms"
-          variant="outlined"
-          placeholder="Bathrooms"
-          sx={{ marginTop: 2 }}
-        />
+        <FormControl fullWidth>
+          <TextField
+            type="number"
+            fullWidth
+            label="Bedrooms"
+            variant="outlined"
+            placeholder="Please input bedroom number"
+            sx={{ marginTop: 2 }}
+            value={props.countBedroom}
+            onChange={(e) => props.setCountBedroom(e.target.value)}
+          />
+          {props.formErrors.countBedroom && (
+            <FormHelperText sx={{ color: "red" }}>
+              Please enter an bedroom number.
+            </FormHelperText>
+          )}
+        </FormControl>
+        <FormControl fullWidth>
+          <TextField
+            type="number"
+            fullWidth
+            label="Bathrooms"
+            variant="outlined"
+            placeholder="Please input bathroom number"
+            sx={{ marginTop: 2 }}
+            value={props.countBathroom}
+            onChange={(e) => props.setCountBathroom(e.target.value)}
+          />
+          {props.formErrors.countBathroom && (
+            <FormHelperText sx={{ color: "red" }}>
+              Please enter an bathroom number.
+            </FormHelperText>
+          )}
+        </FormControl>
         <Box display="flex" alignItems="center" sx={{ marginTop: 2 }}>
           <TextField
             variant="outlined"
             placeholder="Lot Size (optional)"
-            value={lotSize}
-            onChange={handleLotSizeChange}
+            value={props.lotSize}
+            onChange={(e) => props.setLotSize(e.target.value)}
             label="Lot Size (optional)"
             sx={{
               width: "75%",
@@ -152,8 +146,8 @@ export default function PropertyDetails() {
             }}
           />
           <Select
-            value={lotUnit}
-            onChange={handleLotUnitChange}
+            value={props.lotUnit}
+            onChange={(e) => props.setLotUnit(e.target.value)}
             displayEmpty
             inputProps={{ "aria-label": "Without label" }}
             sx={{
@@ -172,8 +166,8 @@ export default function PropertyDetails() {
           <TextField
             variant="outlined"
             placeholder="Interior Size (optional)"
-            value={interiorSize}
-            onChange={handleInteriorSizeChange}
+            value={props.interiorSize}
+            onChange={(e) => props.setInteriorSize(e.target.value)}
             label="Interior Size (optional)"
             sx={{
               width: "75%",
@@ -183,8 +177,8 @@ export default function PropertyDetails() {
             }}
           />
           <Select
-            value={interiorUnit}
-            onChange={handleInteriorUnitChange}
+            value={props.interiorUnit}
+            onChange={(e) => props.setInteriorUnit(e.target.value)}
             displayEmpty
             inputProps={{ "aria-label": "Without label" }}
             sx={{

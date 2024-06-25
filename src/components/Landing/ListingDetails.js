@@ -1,26 +1,30 @@
 "use client";
 
-import React from "react";
-import { Card, CardHeader, FormControl, Grid } from "@mui/material";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { Container } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardHeader,
+  FormControl,
+  Grid,
+  CardContent,
+  Typography,
+  TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  Select,
+  MenuItem,
+  Container,
+  Autocomplete,
+  FormHelperText,
+} from "@mui/material";
+import getSuggestions from "@/utils/mapboxService";
 
 const listing_status_list = [
   { value: "coming soon", label: "Coming Soon" },
   { value: "exclusive listing", label: "Exclusive Listing" },
   { value: "new listing", label: "New Listing" },
   { value: "price update", label: "Price Update" },
-  { value: "under contract", label: "Under Contract" },
   { value: "under contract", label: "Under Contract" },
   { value: "sold", label: "Sold" },
   { value: "de-listed", label: "De-listed" },
@@ -36,7 +40,22 @@ const ListingDetails = (props) => {
     setUnitNumber,
     setListingTarget,
     setListingStatus,
+    formErrors,
   } = props;
+  const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    if (address) {
+      const fetchSuggestions = async () => {
+        const result = await getSuggestions(address);
+        setSuggestions(result);
+      };
+
+      fetchSuggestions();
+    } else {
+      setSuggestions([]);
+    }
+  }, [address]);
 
   return (
     <Card
@@ -54,14 +73,32 @@ const ListingDetails = (props) => {
         }}
       />
       <CardContent>
-        <TextField
-          fullWidth
-          label="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          variant="outlined"
-          placeholder="Enter a location"
-        />
+        <FormControl fullWidth>
+          <Autocomplete
+            freeSolo
+            options={suggestions}
+            getOptionLabel={(option) => option.place_name}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                fullWidth
+                label="Address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                variant="outlined"
+                placeholder="Enter a location"
+              />
+            )}
+            onInputChange={(event, newInputValue) => {
+              setAddress(newInputValue);
+            }}
+          />
+          {formErrors.address && (
+            <FormHelperText sx={{ color: "red" }}>
+              Please enter an address.
+            </FormHelperText>
+          )}
+        </FormControl>
         <TextField
           fullWidth
           value={unitNumber}
@@ -80,25 +117,32 @@ const ListingDetails = (props) => {
         <Container sx={{ display: "flex", justifyContent: "space-between" }}>
           <Grid container>
             <Grid item xs={12} sm={8}>
-              <RadioGroup
-                row
-                sx={{ display: "flex" }}
-                value={listingTarget}
-                onChange={(e) => setListingTarget(e.target.value)}
-              >
-                <FormControlLabel
-                  value="for_sale"
-                  id="for_sale"
-                  control={<Radio />}
-                  label="For sale"
-                />
-                <FormControlLabel
-                  value="for_rent"
-                  id="for_rent"
-                  control={<Radio />}
-                  label="For rent"
-                />
-              </RadioGroup>
+              <FormControl fullWidth>
+                <RadioGroup
+                  row
+                  sx={{ display: "flex" }}
+                  value={listingTarget}
+                  onChange={(e) => setListingTarget(e.target.value)}
+                >
+                  <FormControlLabel
+                    value="for_sale"
+                    id="for_sale"
+                    control={<Radio />}
+                    label="For sale"
+                  />
+                  <FormControlLabel
+                    value="for_rent"
+                    id="for_rent"
+                    control={<Radio />}
+                    label="For rent"
+                  />
+                </RadioGroup>
+                {formErrors.listingTarget && (
+                  <FormHelperText sx={{ color: "red" }}>
+                    Please enter an address.
+                  </FormHelperText>
+                )}
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={4}>
               <FormControl fullWidth>

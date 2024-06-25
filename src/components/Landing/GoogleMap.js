@@ -7,13 +7,12 @@ mapboxgl.accessToken =
   "pk.eyJ1IjoiYml0Y29va2VyIiwiYSI6ImNsa3Q5emF0ajA3OXgzaHFvYmZreTczdWIifQ.Rl7UMrIUHBMMPfA6TXOm7Q";
 
 export default function GoogleMapAddress(props) {
-  const { address } = props;
+  const { address, nearbyBuildings, setNearbyBuildings } = props;
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-70.9);
-  const [lat, setLat] = useState(42.35);
-  const [zoom, setZoom] = useState(19);
-  const [buildings, setBuildings] = useState([]);
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
+  const [zoom, setZoom] = useState(15);
   const markers = useRef([]);
 
   useEffect(() => {
@@ -50,41 +49,42 @@ export default function GoogleMapAddress(props) {
       const geocodeResponse = await axios.get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${mapboxgl.accessToken}`
       );
-      const [lng, lat] = geocodeResponse.data.features[0].center;
+      const [responselng, responselat] =
+        geocodeResponse.data.features[0].center;
       map.current.flyTo({
-        center: [lng, lat],
+        center: [responselng, responselat],
         essential: true,
       });
-      setLng(lng);
-      setLat(lat);
+      setLng(responselng);
+      setLat(responselat);
+      console.log("place", lng, lat);
 
       // Remove existing markers
       markers.current.forEach((marker) => marker.remove());
       markers.current = [];
 
       // Add marker for the searched address
-      const redMarker = new mapboxgl.Marker({ color: "red" })
-        .setLngLat([lng, lat])
-        .addTo(map.current);
-      markers.current.push(redMarker);
+      // const redMarker = new mapboxgl.Marker({ color: "red" })
+      //   .setLngLat([lng, lat])
+      //   .addTo(map.current);
+      // markers.current.push(redMarker);
 
       // Fetch nearby buildings
       const nearbyResponse = await axios.get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/poi.json?proximity=${lng},${lat}&access_token=${mapboxgl.accessToken}`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/poi.json?proximity=${responselng},${responselat}&access_token=${mapboxgl.accessToken}`
       );
       const nearbyBuildings = nearbyResponse.data.features.map((feature) => ({
         name: feature.place_name,
-        coordinates: feature.geometry.coordinates,
       }));
-      setBuildings(nearbyBuildings);
+      setNearbyBuildings(nearbyBuildings);
 
       // Add markers for nearby buildings
-      nearbyBuildings.forEach((building) => {
-        const blueMarker = new mapboxgl.Marker({ color: "blue" })
-          .setLngLat(building.coordinates)
-          .addTo(map.current);
-        markers.current.push(blueMarker);
-      });
+      // nearbyBuildings.forEach((building) => {
+      //   const blueMarker = new mapboxgl.Marker({ color: "blue" })
+      //     .setLngLat(building.coordinates)
+      //     .addTo(map.current);
+      //   markers.current.push(blueMarker);
+      // });
     } catch (error) {
       console.error("Error fetching geocode or nearby buildings:", error);
     }
@@ -92,7 +92,7 @@ export default function GoogleMapAddress(props) {
 
   useEffect(() => {
     handleSearch();
-  }, [address, handleSearch]);
+  }, [address]);
 
   return (
     <Card sx={{ borderRadius: 4, boxShadow: 3, padding: 2 }}>
@@ -106,9 +106,13 @@ export default function GoogleMapAddress(props) {
       <CardContent>
         <div ref={mapContainer} style={{ width: "100%", height: "400px" }} />
         <div>
-          <h3>Nearby Buildings</h3>
+          {nearbyBuildings && (
+            <Typography variant="h5" sx={{ marginTop: 2 }}>
+              Nearby Buildings
+            </Typography>
+          )}
           <ul>
-            {buildings.map((building, index) => (
+            {nearbyBuildings?.map((building, index) => (
               <li key={index}>
                 <Typography>{building.name}</Typography>
               </li>
