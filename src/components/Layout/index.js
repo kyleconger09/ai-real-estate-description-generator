@@ -174,7 +174,7 @@ export default function HomeClient() {
     `;
 
     const toBase64 = (url) =>
-      fetch(url)
+      fetch(url.replace("http://", "https://")) // Replace HTTP with HTTPS
         .then((response) => response.blob())
         .then(
           (blob) =>
@@ -327,7 +327,7 @@ export default function HomeClient() {
                 setSelectedHightlights={setSelectedHightlights}
               />
             </Grid>
-            <Grid item sx={{width: "100%"}} sm={12}>
+            <Grid item sx={{ width: "100%" }} sm={12}>
               <GoogleMap
                 address={address}
                 nearbyBuildings={nearbyBuildings}
