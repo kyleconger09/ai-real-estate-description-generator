@@ -101,7 +101,7 @@ export default function PropertyDetails(props) {
           <TextField
             type="number"
             fullWidth
-            label="Bedrooms"
+            label="Bedrooms(optional)"
             variant="outlined"
             placeholder="Please input bedroom number"
             sx={{ marginTop: 2 }}
@@ -118,7 +118,7 @@ export default function PropertyDetails(props) {
           <TextField
             type="number"
             fullWidth
-            label="Bathrooms"
+            label="Bathrooms(optional)"
             variant="outlined"
             placeholder="Please input bathroom number"
             sx={{ marginTop: 2 }}

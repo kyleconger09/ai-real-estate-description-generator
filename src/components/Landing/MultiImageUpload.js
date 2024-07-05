@@ -2,9 +2,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import { Card, CardHeader } from "@mui/material";
+import { Box, Card, CardHeader } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import CircleLoader from "react-spinners/CircleLoader";
 
 import Dropzone from "./Dropzone";
 import api from "../../utils/axios";
@@ -17,40 +18,93 @@ import {
 } from "@mui/material";
 
 const MultiImageUpload = (props) => {
-  const { uploadedImages, setUploadedImages, formErrors } = props;
+  const {
+    uploadedImages,
+    setUploadedImages,
+    formErrors,
+    loading,
+    setLoading,
+    setFormErrors,
+  } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const theme = useTheme();
 
   // Calculate number of columns dynamically based on screen size
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const columns = isSmallScreen ? 1 : 3; // Adjust as per your design needs
+  const imageSize = isSmallScreen ? 150 : 200;
 
   const handleUpload = (formData, files) => {
-    axios;
-    api
-      .post("/upload/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        const imageUrls = files.map((file) => URL.createObjectURL(file));
-        setUploadedImages((prevImages) => [...prevImages, ...imageUrls]);
-      })
-      .catch((error) => {
-        console.error("Upload error", error);
-      });
+    // axios;
+    // api
+    //   .post("/upload/", formData, {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    //   })
+    //   .then((response) => {
+    //     const imageUrls = files.map((file) => URL.createObjectURL(file));
+    //     setUploadedImages((prevImages) => [...prevImages, ...imageUrls]);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Upload error", error);
+    //   });
+
+    const image_urls = [];
+
+    // Push all the axios request promise into a single array
+    const uploaders = files.map(async (file) => {
+      // Initial FormData
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("tags", `codeinfuse, medium, gist`);
+      formData.append("upload_preset", process.env.NEXT_PUBLIC_PRESET_NAME); // Replace the preset name with your own
+      formData.append("api_key", process.env.NEXT_PUBLIC_API_KEY); // Replace API key with your own Cloudinary key
+      formData.append("timestamp", (Date.now() / 1000) | 0);
+
+      // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+
+      try {
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
+          formData
+        );
+        //setUploadedImages([...uploadedImages, response.data.url]);
+        image_urls.push(response.data.url);
+        console.log("Image uploaded successfully:", response.data.url);
+      } catch (error) {
+        console.error("Error uploading PDF:", error);
+      }
+    });
+    setLoading(true);
+    axios.all(uploaders).then(() => {
+      setUploadedImages([...image_urls]);
+      setFormErrors((prev) => ({ ...prev, uploadedImages: false }));
+      setLoading(false);
+    });
   };
 
-  const handleImageClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
+  const handleImageClick = (index) => {
+    setSelectedImageIndex(index);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedImage("");
+    setSelectedImageIndex(0);
+  };
+
+  const handleNextImage = () => {
+    setSelectedImageIndex((prevIndex) =>
+      prevIndex < uploadedImages.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
+  const handlePreviousImage = () => {
+    setSelectedImageIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : uploadedImages.length - 1
+    );
   };
 
   return (
@@ -80,32 +134,52 @@ const MultiImageUpload = (props) => {
       <Container
         sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
       >
-        <ImageList
-          sx={{ width: "80%", height: 212 }}
-          cols={columns}
-          rowHeight={100}
-        >
-          {uploadedImages.map((image, index) => (
-            <ImageListItem
-              key={index}
-              onClick={() => handleImageClick(image)}
-              sx={{ height: "100px", cursor: "pointer" }}
+        {loading ? (
+          <Box
+            sx={{
+              width: "80%",
+              height: 212,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <CircleLoader color="#ff7100" />
+          </Box>
+        ) : (
+          <>
+            <ImageList
+              sx={{ width: "80%", height: 212 }}
+              cols={columns}
             >
-              <Image
-                src={image}
-                alt={`uploaded ${index}`}
-                layout="Fixed"
-                width={100}
-                height={100}
-              />
-            </ImageListItem>
-          ))}
-        </ImageList>
-        <ImageModal
-          isOpen={isModalOpen}
-          onRequestClose={handleCloseModal}
-          imageUrl={selectedImage}
-        />
+              {uploadedImages.map((image, index) => (
+                <ImageListItem
+                  key={index}
+                  onClick={() => handleImageClick(image)}
+                  sx={{
+                    cursor: "pointer",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    src={image}
+                    alt={`uploaded ${index}`}
+                    layout="Fixed"
+                    width={imageSize}
+                    height={imageSize}
+                  />
+                </ImageListItem>
+              ))}
+            </ImageList>
+            <ImageModal
+              isOpen={isModalOpen}
+              onRequestClose={handleCloseModal}
+              imageUrl={uploadedImages[selectedImageIndex]}
+              onNext={handleNextImage}
+              onPrevious={handlePreviousImage}
+            />
+          </>
+        )}
       </Container>
     </Card>
   );

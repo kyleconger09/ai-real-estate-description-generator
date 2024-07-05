@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Container, Box, Grid, Snackbar } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "@/Styles/custom.css";
 
 import Header from "@/components/Layout/Header";
 import ListingDetails from "@/components/Landing/ListingDetails";
@@ -12,9 +15,11 @@ import NextButton from "@/components/Landing/NextButton";
 import DescriptionParameters from "@/components/Landing/DescriptionParameters";
 import DescriptionArea from "@/components/Landing/DescriptionArea";
 import GoogleMap from "@/components/Landing/GoogleMap";
-import { add } from "date-fns";
+
+import DescriptionPrompot from "@/data/DesriptionPropmpt";
 
 export default function HomeClient() {
+  const isFirstRender = useRef(true);
   const [address, setAddress] = useState("");
   const [unitNumber, setUnitNumber] = useState(1);
   const [listingTarget, setListingTarget] = useState("for_sale");
@@ -22,8 +27,8 @@ export default function HomeClient() {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [currency, setCurrency] = useState("USD");
   const [price, setPrice] = useState();
-  const [countBedroom, setCountBedroom] = useState(null);
-  const [countBathroom, setCountBathroom] = useState(null);
+  const [countBedroom, setCountBedroom] = useState(undefined);
+  const [countBathroom, setCountBathroom] = useState(undefined);
   const [lotUnit, setLotUnit] = useState("sqFeet");
   const [lotSize, setLotSize] = useState();
   const [interiorUnit, setInteriorUnit] = useState("sqFeet");
@@ -36,6 +41,7 @@ export default function HomeClient() {
   const [descriptionUnit, setDescriptionUnit] = useState("word");
   const [descriptionWritingStyle, setDescriptionWritingStyle] =
     useState("traditional");
+  const [description, setDescription] = useState("");
 
   const [showDescriptionComponent, setshowDescriptionComponent] =
     useState(false);
@@ -45,9 +51,9 @@ export default function HomeClient() {
     address: false,
     listingTarget: false,
     uploadedImages: false,
-    countBedroom: false,
-    countBathroom: false,
   });
+  const [loading, setLoading] = useState(false);
+  const [uploadImageloading, setUploadImageloading] = useState(false);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -56,21 +62,31 @@ export default function HomeClient() {
     setSnackbarOpen(false);
   };
 
-  const handleInitialListing = async () => {
+  const handleInitialListing = () => {
     setshowDescriptionComponent(false);
+    setFormErrors({
+      address: false,
+      listingTarget: false,
+      uploadedImages: false,
+    });
+    setButtonString("Generate");
+    setLoading(false);
+    setSnackbarOpen(false);
+
+    // Use functional updates for setting initial states
     setAddress("");
     setUnitNumber(1);
     setListingTarget("for_sale");
     setListingStatus("new listing");
     setUploadedImages([]);
     setCurrency("USD");
-    setPrice();
+    setPrice(undefined);
     setCountBedroom(null);
     setCountBathroom(null);
     setLotUnit("sqFeet");
-    setLotSize();
+    setLotSize(undefined);
     setInteriorUnit("sqFeet");
-    setInteriorSize();
+    setInteriorSize(undefined);
     setPropertyType("house");
     setSelectedHightlights([]);
     setNearbyBuildings([]);
@@ -78,8 +94,8 @@ export default function HomeClient() {
     setDescriptionLength(150);
     setDescriptionUnit("word");
     setDescriptionWritingStyle("traditional");
+    setDescription("");
 
-    setButtonString("Generate");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -91,49 +107,145 @@ export default function HomeClient() {
         return value.trim() !== "";
       case "uploadedImages":
         return value.length !== 0;
-      case "countBedroom":
-        return /^[0-9]+$/.test(value);
-      case "countBathroom":
-        return /^[0-9]+$/.test(value);
       default:
         return true;
     }
   };
 
-  const allValuesTrue = (obj) => {
+  const checkAllValuesTrue = (obj) => {
     return Object.values(obj).every((value) => value === false);
   };
 
   const handleNextStep = () => {
-    if (buttonString == "Generate") {
+    if (buttonString === "Generate") {
+      if (!validateField("address", address)) {
+        toast("Please insert address");
+      }
+      if (!validateField("uploadedImages", uploadedImages)) {
+        toast("Please insert images");
+      }
       const newFormErrors = {
         address: !validateField("address", address),
         listingTarget: !validateField("listingTarget", listingTarget),
         uploadedImages: !validateField("uploadedImages", uploadedImages),
-        countBedroom: !validateField("countBathroom", countBathroom),
-        countBathroom: !validateField("countBathroom", countBathroom),
       };
 
       setFormErrors(newFormErrors);
 
-      if (allValuesTrue(newFormErrors)) {
+      if (checkAllValuesTrue(newFormErrors)) {
         setshowDescriptionComponent(true);
         setButtonString("Create New");
-        console.log("Form submitted successfully");
+        getDescription();
       } else {
         console.log("Form has errors", newFormErrors);
       }
-    } else if (buttonString == "Create New") {
-      newFormErrors = {
-        address: false,
-        listingTarget: false,
-        uploadedImages: false,
-        countBedroom: false,
-        countBathroom: false,
-      };
-      setFormErrors(newFormErrors);
-      console.log("ddd");
-      handleInitialListing();
+    } else if (buttonString === "Create New") {
+      // handleInitialListing();
+      window.location.reload();
+    }
+  };
+
+  const getDescription = () => {
+    setLoading(true);
+    const response = getAIResponse().then(() => {
+      setLoading(false);
+    });
+    setDescription(response.content);
+  };
+
+  const getAIResponse = async () => {
+    const prompt = `
+      Address : ${address},
+      nearby buildings : ${nearbyBuildings.toString()},
+      unit number: ${unitNumber},
+      listing target: ${listingTarget},
+      listing status: ${listingStatus},
+      ${price ? `Price: ${price}` : ""},
+      ${countBedroom ? `bedroom number: ${countBedroom}` : ""},
+      ${countBathroom ? `bedroom number: ${countBathroom}` : ""},
+      ${lotSize ? `lot size: ${lotSize}${lotUnit}` : ""},
+      ${interiorSize ? `interior size: ${interiorSize}${interiorUnit}` : ""},
+      ${
+        selectedHighlights ? `highligts: ${selectedHighlights.toString()}` : ""
+      },
+      ${propertyType ? `building type: ${propertyType}` : ""},
+
+      Please write description about this buildings. The description must be written by ${language}, in ${descriptionLength} ${descriptionUnit}. And it's style is ${descriptionWritingStyle}
+    `;
+
+    const toBase64 = (url) =>
+      fetch(url)
+        .then((response) => response.blob())
+        .then(
+          (blob) =>
+            new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+            })
+        );
+
+    const imageUrls = [];
+    for (const image of uploadedImages) {
+      const base64Image = await toBase64(image);
+      imageUrls.push({
+        type: "image_url",
+        image_url: {
+          url: base64Image,
+        },
+      });
+    }
+
+    const requestMessage = [
+      {
+        role: "system",
+        content: DescriptionPrompot,
+      },
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: prompt,
+          },
+          ...imageUrls,
+        ],
+      },
+    ];
+
+    try {
+      const response = await getOpenAIResponse(requestMessage);
+      setDescription(response.content);
+    } catch (error) {
+      console.error("Failed to get response from OpenAI:", error);
+    }
+  };
+
+  const getOpenAIResponse = async (messages) => {
+    try {
+      // Make API request to OpenAI
+      const response = await fetch("/api/completion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages }),
+      });
+
+      // Check if the response is okay (status code 200-299)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Parse the response as JSON
+      const data = await response.json();
+
+      // Return the output from the response
+      return data.output;
+    } catch (error) {
+      console.error("Error fetching OpenAI response:", error);
+      throw error; // Re-throw the error to be handled by the caller if needed
     }
   };
 
@@ -166,6 +278,7 @@ export default function HomeClient() {
                 setListingTarget={setListingTarget}
                 setListingStatus={setListingStatus}
                 formErrors={formErrors}
+                setFormErrors={setFormErrors}
               />
             </Grid>
             <Grid item md={6} sm={12}>
@@ -173,6 +286,9 @@ export default function HomeClient() {
                 uploadedImages={uploadedImages}
                 setUploadedImages={setUploadedImages}
                 formErrors={formErrors}
+                loading={uploadImageloading}
+                setLoading={setUploadImageloading}
+                setFormErrors={setFormErrors}
               />
             </Grid>
           </Grid>
@@ -211,7 +327,7 @@ export default function HomeClient() {
                 setSelectedHightlights={setSelectedHightlights}
               />
             </Grid>
-            <Grid item sm={12}>
+            <Grid item sx={{width: "100%"}} sm={12}>
               <GoogleMap
                 address={address}
                 nearbyBuildings={nearbyBuildings}
@@ -235,8 +351,13 @@ export default function HomeClient() {
             <Grid container sx={{ marginTop: 2 }}>
               <Grid item xs={12}>
                 <DescriptionArea
+                  description={description}
+                  setDescription={setDescription}
                   snackbarOpen={snackbarOpen}
                   setSnackbarOpen={setSnackbarOpen}
+                  loading={loading}
+                  setLoading={setLoading}
+                  getDescription={getDescription}
                 />
               </Grid>
             </Grid>
@@ -260,6 +381,18 @@ export default function HomeClient() {
           }}
         />
       </Box>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }

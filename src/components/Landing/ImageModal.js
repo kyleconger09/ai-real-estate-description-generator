@@ -4,6 +4,8 @@ import { Modal, Box, Button } from "@mui/material";
 import Image from "next/image";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 const style = {
   position: "absolute",
@@ -17,7 +19,13 @@ const style = {
   p: 4,
 };
 
-const ImageModal = ({ isOpen, onRequestClose, imageUrl }) => {
+const ImageModal = ({
+  isOpen,
+  onRequestClose,
+  imageUrl,
+  onPrevious,
+  onNext,
+}) => {
   const theme = useTheme();
   let boxWidth = 800; // Default width for extra-large screens
   let boxpadding = 4; // Default height for extra-large screens
@@ -52,11 +60,17 @@ const ImageModal = ({ isOpen, onRequestClose, imageUrl }) => {
           p: { boxpadding },
         }}
       >
+        <div className="absolute top-[calc(50%-21px)] left-[-10%] text-[40px] text-[#ff7100] border border-[#ff7100] rounded-full bg-[#2C4552] p-2 w-[42px] h-[42px] hover:cursor-pointer">
+          <ArrowBackIosNewIcon sx={{ marginTop: "-42px" }} onClick={onNext} />
+        </div>
         <img
           src={imageUrl}
           alt="Enlarged view"
-          className={`max-w-[80vw] w-full h-fit`}
+          className={`w-[70vw] w-full h-fit`}
         />
+        <div className="absolute top-[calc(50%-21px)] right-[-10%] text-[40px] text-[#ff7100] border border-[#ff7100] rounded-full bg-[#2C4552] p-2 w-[42px] h-[42px] hover:cursor-pointer">
+          <ArrowForwardIosIcon sx={{ marginTop: "-42px" }} onClick={onNext} />
+        </div>
       </Box>
     </Modal>
   );

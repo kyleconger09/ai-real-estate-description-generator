@@ -17,8 +17,7 @@ import AdbIcon from "@mui/icons-material/Adb";
 import Image from "next/image";
 import Logo from "@/assets/logo.png";
 
-const pages = ["Contact US", "Account", "Create Description"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = [];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -56,47 +55,6 @@ function ResponsiveAppBar() {
                 height={80}
                 style={{ objectFit: "contain" }}
               ></Image>
-            </Box>
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: { xs: "flex", md: "none", justifyContent: "flex-end" },
-              }}
-            >
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="#2C4552"
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: "block", md: "none" },
-                }}
-              >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
             </Box>
             <Box
               sx={{

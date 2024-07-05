@@ -41,6 +41,7 @@ const ListingDetails = (props) => {
     setListingTarget,
     setListingStatus,
     formErrors,
+    setFormErrors,
   } = props;
   const [suggestions, setSuggestions] = useState([]);
 
@@ -84,7 +85,10 @@ const ListingDetails = (props) => {
                 fullWidth
                 label="Address"
                 value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                onChange={(e) => {
+                  setAddress(e.target.value);
+                  setFormErrors((prev) => ({ ...prev, address: false }));
+                }}
                 variant="outlined"
                 placeholder="Enter a location"
               />
