@@ -1,5 +1,5 @@
 // components/ImageModal.js
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, Box, Button } from "@mui/material";
 import Image from "next/image";
 import { useTheme } from "@mui/material/styles";
@@ -61,12 +61,12 @@ const ImageModal = ({
         }}
       >
         <div className="absolute top-[calc(50%-21px)] left-[-10%] text-[40px] text-[#ff7100] border border-[#ff7100] rounded-full bg-[#2C4552] p-2 w-[42px] h-[42px] hover:cursor-pointer">
-          <ArrowBackIosNewIcon sx={{ marginTop: "-42px" }} onClick={onNext} />
+          <ArrowBackIosNewIcon sx={{ marginTop: "-42px" }} onClick={onPrevious} />
         </div>
         <img
           src={imageUrl}
           alt="Enlarged view"
-          className={`w-[70vw] w-full h-fit`}
+          className={`w-[70vw] w-full h-fit min-w-[150px] min-h-[150px]`}
         />
         <div className="absolute top-[calc(50%-21px)] right-[-10%] text-[40px] text-[#ff7100] border border-[#ff7100] rounded-full bg-[#2C4552] p-2 w-[42px] h-[42px] hover:cursor-pointer">
           <ArrowForwardIosIcon sx={{ marginTop: "-42px" }} onClick={onNext} />

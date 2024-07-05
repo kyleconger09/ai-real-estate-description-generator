@@ -33,10 +33,12 @@ const listing_status_list = [
 const ListingDetails = (props) => {
   const {
     address,
+    addressForm,
     unitNumber,
     listingTarget,
     listingStatus,
     setAddress,
+    setAddressForm,
     setUnitNumber,
     setListingTarget,
     setListingStatus,
@@ -89,6 +91,7 @@ const ListingDetails = (props) => {
                   setAddress(e.target.value);
                   setFormErrors((prev) => ({ ...prev, address: false }));
                 }}
+                onBlur={(e) => setAddressForm(e.target.value)}
                 variant="outlined"
                 placeholder="Enter a location"
               />

@@ -155,7 +155,7 @@ const MultiImageUpload = (props) => {
               {uploadedImages.map((image, index) => (
                 <ImageListItem
                   key={index}
-                  onClick={() => handleImageClick(image)}
+                  onClick={() => handleImageClick(index)}
                   sx={{
                     cursor: "pointer",
                     alignItems: "center",

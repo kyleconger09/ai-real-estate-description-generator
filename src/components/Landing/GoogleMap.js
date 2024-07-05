@@ -23,7 +23,7 @@ const GoogleMapAddress = (props) => {
       center: [lng, lat],
       zoom: zoom,
     });
-  }, []);
+  }, [zoom, ]);
 
   useEffect(() => {
     const mapboxControlContainer = document.querySelector(
@@ -43,7 +43,7 @@ const GoogleMapAddress = (props) => {
     });
   }, []);
 
-  const handleSearch = useCallback(async () => {
+  const handleSearch = async () => {
     try {
       const geocodeResponse = await axios.get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${mapboxgl.accessToken}`
@@ -87,7 +87,7 @@ const GoogleMapAddress = (props) => {
     } catch (error) {
       console.error("Error fetching geocode or nearby buildings:", error);
     }
-  }, [address]);
+  };
 
   useEffect(() => {
     handleSearch();
@@ -115,7 +115,7 @@ const GoogleMapAddress = (props) => {
   }, []);
 
   return (
-    <Card sx={{ borderRadius: 4, boxShadow: 3, padding: 2, width: "100%" }}>
+    <Card sx={{ borderRadius: 4, boxShadow: 3, padding: 4, width: "100%" }}>
       <CardHeader
         title="Google Map"
         titleTypographyProps={{

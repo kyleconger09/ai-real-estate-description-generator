@@ -40,7 +40,7 @@ const writingStyleList = [
 
 export default function DescriptionParameters(props) {
   return (
-    <Card sx={{ borderRadius: 4, boxShadow: 3, padding: 2 }}>
+    <Card sx={{ borderRadius: 4, boxShadow: 3, padding: 4 }}>
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12} md={3} sm={12}>
           <Typography

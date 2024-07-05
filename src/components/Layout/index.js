@@ -21,6 +21,7 @@ import DescriptionPrompot from "@/data/DesriptionPropmpt";
 export default function HomeClient() {
   const isFirstRender = useRef(true);
   const [address, setAddress] = useState("");
+  const [addressForm, setAddressForm] = useState("");
   const [unitNumber, setUnitNumber] = useState(1);
   const [listingTarget, setListingTarget] = useState("for_sale");
   const [listingStatus, setListingStatus] = useState("new listing");
@@ -75,6 +76,7 @@ export default function HomeClient() {
 
     // Use functional updates for setting initial states
     setAddress("");
+    setAddressForm("");
     setUnitNumber(1);
     setListingTarget("for_sale");
     setListingStatus("new listing");
@@ -174,7 +176,7 @@ export default function HomeClient() {
     `;
 
     const toBase64 = (url) =>
-      fetch(url.replace("http://", "https://")) // Replace HTTP with HTTPS
+      fetch(url.replace('http://', 'https://'))  // Replace HTTP with HTTPS
         .then((response) => response.blob())
         .then(
           (blob) =>
@@ -185,7 +187,7 @@ export default function HomeClient() {
               reader.readAsDataURL(blob);
             })
         );
-
+    
     const imageUrls = [];
     for (const image of uploadedImages) {
       const base64Image = await toBase64(image);
@@ -270,10 +272,12 @@ export default function HomeClient() {
             <Grid item md={6} sm={12}>
               <ListingDetails
                 address={address}
+                addressForm={addressForm}
                 unitNumber={unitNumber}
                 listingTarget={listingTarget}
                 listingStatus={listingStatus}
                 setAddress={setAddress}
+                setAddressForm={setAddressForm}
                 setUnitNumber={setUnitNumber}
                 setListingTarget={setListingTarget}
                 setListingStatus={setListingStatus}
@@ -327,9 +331,9 @@ export default function HomeClient() {
                 setSelectedHightlights={setSelectedHightlights}
               />
             </Grid>
-            <Grid item sx={{ width: "100%" }} sm={12}>
+            <Grid item sx={{width: "100%"}} sm={12}>
               <GoogleMap
-                address={address}
+                address={addressForm}
                 nearbyBuildings={nearbyBuildings}
                 setNearbyBuildings={setNearbyBuildings}
               />
