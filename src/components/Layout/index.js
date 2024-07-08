@@ -175,26 +175,25 @@ export default function HomeClient() {
       Please write description about this buildings. The description must be written by ${language}, in ${descriptionLength} ${descriptionUnit}. And it's style is ${descriptionWritingStyle}
     `;
 
-    const toBase64 = (url) =>
-      fetch(url.replace('http://', 'https://'))  // Replace HTTP with HTTPS
-        .then((response) => response.blob())
-        .then(
-          (blob) =>
-            new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result);
-              reader.onerror = reject;
-              reader.readAsDataURL(blob);
-            })
-        );
+    // const toBase64 = (url) =>
+    //   fetch(url.replace('http://', 'https://'))  // Replace HTTP with HTTPS
+    //     .then((response) => response.blob())
+    //     .then(
+    //       (blob) =>
+    //         new Promise((resolve, reject) => {
+    //           const reader = new FileReader();
+    //           reader.onloadend = () => resolve(reader.result);
+    //           reader.onerror = reject;
+    //           reader.readAsDataURL(blob);
+    //         })
+    //     );
     
     const imageUrls = [];
     for (const image of uploadedImages) {
-      const base64Image = await toBase64(image);
       imageUrls.push({
         type: "image_url",
         image_url: {
-          url: base64Image,
+          url: image.replace('http://', 'https://'),
         },
       });
     }
