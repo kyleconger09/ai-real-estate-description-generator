@@ -158,7 +158,7 @@ export default function HomeClient() {
   const getAIResponse = async () => {
     const prompt = `
       Address : ${address},
-      nearby buildings : ${nearbyBuildings.toString()},
+      things near by : ${nearbyBuildings.toString()},
       unit number: ${unitNumber},
       listing target: ${listingTarget},
       listing status: ${listingStatus},
