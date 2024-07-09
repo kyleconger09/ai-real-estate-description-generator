@@ -255,7 +255,7 @@ export default function HomeClient() {
       <Header />
       <Box
         sx={{
-          backgroundColor: "white",
+          backgroundColor: "#f2f2f2",
           display: "flex",
           paddingTop: 4,
           paddingBottom: 10,
