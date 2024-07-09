@@ -156,7 +156,7 @@ const GoogleMapAddress = ({ address, nearbyBuildings, setNearbyBuildings }) => {
         <div>
           {nearbyBuildings && (
             <Typography variant="h5" sx={{ marginTop: 2 }}>
-              things near by
+              Things near by
             </Typography>
           )}
           {!isFirstRender.current && !searchNearbyBuildings.length ? (
