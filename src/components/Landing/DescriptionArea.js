@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, CardHeader, Box, TextField } from "@mui/material";
+import { Card, CardHeader, Box, TextField, Typography } from "@mui/material";
 import CopyExtractButtonGroup from "./CopyExtractButtonGroup";
 import jsPDF from "jspdf";
 import CircleLoader from "react-spinners/CircleLoader";
@@ -65,14 +65,28 @@ export default function DescriptionArea(props) {
         }}
       />
       {loading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CircleLoader color="#ff7100" />
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <CircleLoader color="#ff7100" />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography sx={{ color: "#ff7100" }}>
+              Our AI is currently analyzing the images. This process may take up
+              to 1 minute. Please wait while the description is generated.
+            </Typography>
+          </Box>
         </Box>
       ) : (
         <Box component="form" noValidate autoComplete="off" margin={2}>

@@ -22,7 +22,7 @@ export default function HomeClient() {
   const isFirstRender = useRef(true);
   const [address, setAddress] = useState("");
   const [addressForm, setAddressForm] = useState("");
-  const [unitNumber, setUnitNumber] = useState(1);
+  const [unitNumber, setUnitNumber] = useState(undefined);
   const [listingTarget, setListingTarget] = useState("for_sale");
   const [listingStatus, setListingStatus] = useState("new listing");
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -187,13 +187,13 @@ export default function HomeClient() {
     //           reader.readAsDataURL(blob);
     //         })
     //     );
-    
+
     const imageUrls = [];
     for (const image of uploadedImages) {
       imageUrls.push({
         type: "image_url",
         image_url: {
-          url: image.replace('http://', 'https://'),
+          url: image.replace("http://", "https://"),
         },
       });
     }
@@ -330,7 +330,7 @@ export default function HomeClient() {
                 setSelectedHightlights={setSelectedHightlights}
               />
             </Grid>
-            <Grid item sx={{width: "100%"}} sm={12}>
+            <Grid item sx={{ width: "100%" }} sm={12}>
               <GoogleMap
                 address={addressForm}
                 nearbyBuildings={nearbyBuildings}
