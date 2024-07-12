@@ -38,17 +38,13 @@ function ResponsiveAppBar() {
         height: 100,
       }}
     >
-      <Container
-        maxWidth="xl"
-        sx={{ height: 100, alignContent: "center", display: "flex" }}
-      >
-        <Toolbar disableGutters sx={{ minHeight: 100, margin: 0 }}>
+      <Container maxWidth="xl" sx={{ height: 100, alignContent: "center" }}>
+        <Toolbar disableGutters sx={{ minHeight: 100, margin: "auto" }}>
           <Box
             sx={{
               flexGrow: 1,
               display: "flex",
               justifyContent: "space-between",
-              alignContent: "center",
             }}
           >
             <Box sx={{ margin: "auto" }}>

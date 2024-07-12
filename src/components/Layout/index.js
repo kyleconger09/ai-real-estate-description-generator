@@ -158,7 +158,7 @@ export default function HomeClient() {
   const getAIResponse = async () => {
     const prompt = `
       Address : ${address},
-      things near by : ${nearbyBuildings.toString()},
+      nearby buildings : ${nearbyBuildings.toString()},
       unit number: ${unitNumber},
       listing target: ${listingTarget},
       listing status: ${listingStatus},
@@ -226,12 +226,17 @@ export default function HomeClient() {
   const getOpenAIResponse = async (messages) => {
     try {
       // Make API request to OpenAI
-      const response = await fetch("/api/completion", {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": "Bearer " + process.env.NEXT_PUBLIC_OPENAI_SECRET_KEY || "",
         },
-        body: JSON.stringify({ messages }),
+        body: JSON.stringify({
+          model: "gpt-4o",
+          messages,
+          temperature: 0.7
+        }),
       });
 
       // Check if the response is okay (status code 200-299)
@@ -241,9 +246,16 @@ export default function HomeClient() {
 
       // Parse the response as JSON
       const data = await response.json();
+      
+      if(data.choices.length === 0) {
+        console.error("Something went wrong.");
+        return ;
+      }
+      
+      const output = data.choices[0]?.message;
 
       // Return the output from the response
-      return data.output;
+      return output;
     } catch (error) {
       console.error("Error fetching OpenAI response:", error);
       throw error; // Re-throw the error to be handled by the caller if needed
@@ -255,7 +267,7 @@ export default function HomeClient() {
       <Header />
       <Box
         sx={{
-          backgroundColor: "#f2f2f2",
+          backgroundColor: "lightgray",
           display: "flex",
           paddingTop: 4,
           paddingBottom: 10,

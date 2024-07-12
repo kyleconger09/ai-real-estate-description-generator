@@ -89,7 +89,7 @@ export default function DescriptionParameters(props) {
             <Grid item xs={12} sm={12} md={6} sx={{ marginTop: -1 }}>
               <Select
                 value={props.descriptionUnit}
-                onChange={(e) => props.setDescriptionUnit(e.target.value)}
+                onChange={(e) => setDescriptionUnit(e.target.value)}
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
                 sx={{

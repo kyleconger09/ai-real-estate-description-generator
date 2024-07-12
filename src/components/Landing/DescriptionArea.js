@@ -84,7 +84,7 @@ export default function DescriptionArea(props) {
           >
             <Typography sx={{ color: "#ff7100" }}>
               Our AI is currently analyzing the images. This process may take up
-              to 30 seconds. Please wait while the description is generated.
+              to 1 minute. Please wait while the description is generated.
             </Typography>
           </Box>
         </Box>

@@ -87,7 +87,7 @@ const GoogleMapAddress = ({ address, nearbyBuildings, setNearbyBuildings }) => {
 
       return nearbyResponse.data.features.map((feature) => feature.place_name);
     } catch (error) {
-      console.error("Error fetching things near by:", error);
+      console.error("Error fetching nearby buildings:", error);
       return [];
     }
   };
@@ -111,7 +111,7 @@ const GoogleMapAddress = ({ address, nearbyBuildings, setNearbyBuildings }) => {
       // markers.current.forEach((marker) => marker.remove());
       // markers.current = [];
 
-      // Fetch things near by
+      // Fetch nearby buildings
       const searchRadiusInKm = 2;
       const buildings = await fetchNearbyBuildings(
         responselng,
@@ -123,7 +123,7 @@ const GoogleMapAddress = ({ address, nearbyBuildings, setNearbyBuildings }) => {
       // After fetching the data, set isFirstRender to false
       isFirstRender.current = false;
     } catch (error) {
-      console.error("Error fetching geocode or things near by:", error);
+      console.error("Error fetching geocode or nearby buildings:", error);
     }
   };
 
@@ -156,7 +156,7 @@ const GoogleMapAddress = ({ address, nearbyBuildings, setNearbyBuildings }) => {
         <div>
           {nearbyBuildings && (
             <Typography variant="h5" sx={{ marginTop: 2 }}>
-              Things near by
+              Nearby Buildings
             </Typography>
           )}
           {!isFirstRender.current && !searchNearbyBuildings.length ? (
