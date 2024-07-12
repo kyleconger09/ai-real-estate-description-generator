@@ -51,7 +51,7 @@ export default function CopyExtractButtonGroup({
           },
         }}
       >
-        Dowonload
+        Download
       </Button>
       <Button
         variant="contained"

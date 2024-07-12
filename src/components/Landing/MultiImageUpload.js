@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import { Box, Card, CardHeader } from "@mui/material";
+import { Box, Card, CardHeader, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CircleLoader from "react-spinners/CircleLoader";
@@ -115,14 +115,22 @@ const MultiImageUpload = (props) => {
         padding: 2,
       }}
     >
-      <CardHeader
+     <CardHeader
         title="Listing Images"
         titleTypographyProps={{
           variant: "h5",
-          sx: { fontWeight: "bold" },
-          color: "#2C4552",
+          sx: {
+            fontWeight: "bold",
+            color: "#2C4552",
+          }
         }}
-      ></CardHeader>
+        sx={{
+          '&.MuiCardHeader-root': {
+            paddingBottom: "4px"
+          }
+        }}
+      />
+      <Typography sx={{paddingLeft: "16px", paddingBottom: "16px"}}>For faster processing times please use web-size photos.</Typography>
       <Dropzone onUpload={handleUpload} />
       {formErrors.uploadedImages && (
         <FormHelperText
@@ -138,7 +146,7 @@ const MultiImageUpload = (props) => {
           <Box
             sx={{
               width: "80%",
-              height: 212,
+              height: 184,
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -149,7 +157,7 @@ const MultiImageUpload = (props) => {
         ) : (
           <>
             <ImageList
-              sx={{ width: "80%", height: 212 }}
+              sx={{ width: "80%", height: 184 }}
               cols={columns}
             >
               {uploadedImages.map((image, index) => (

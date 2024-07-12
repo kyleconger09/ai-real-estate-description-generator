@@ -158,7 +158,7 @@ export default function HomeClient() {
   const getAIResponse = async () => {
     const prompt = `
       Address : ${address},
-      nearby buildings : ${nearbyBuildings.toString()},
+      things near by : ${nearbyBuildings.toString()},
       unit number: ${unitNumber},
       listing target: ${listingTarget},
       listing status: ${listingStatus},
@@ -174,19 +174,6 @@ export default function HomeClient() {
 
       Please write description about this buildings. The description must be written by ${language}, in ${descriptionLength} ${descriptionUnit}. And it's style is ${descriptionWritingStyle}
     `;
-
-    // const toBase64 = (url) =>
-    //   fetch(url.replace('http://', 'https://'))  // Replace HTTP with HTTPS
-    //     .then((response) => response.blob())
-    //     .then(
-    //       (blob) =>
-    //         new Promise((resolve, reject) => {
-    //           const reader = new FileReader();
-    //           reader.onloadend = () => resolve(reader.result);
-    //           reader.onerror = reject;
-    //           reader.readAsDataURL(blob);
-    //         })
-    //     );
 
     const imageUrls = [];
     for (const image of uploadedImages) {
