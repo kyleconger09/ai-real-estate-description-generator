@@ -115,22 +115,24 @@ const MultiImageUpload = (props) => {
         padding: 2,
       }}
     >
-     <CardHeader
+      <CardHeader
         title="Listing Images"
         titleTypographyProps={{
           variant: "h5",
           sx: {
             fontWeight: "bold",
             color: "#2C4552",
-          }
+          },
         }}
         sx={{
-          '&.MuiCardHeader-root': {
-            paddingBottom: "4px"
-          }
+          "&.MuiCardHeader-root": {
+            paddingBottom: "4px",
+          },
         }}
       />
-      <Typography sx={{paddingLeft: "16px", paddingBottom: "16px"}}>For faster processing times please use web-size photos.</Typography>
+      <Typography sx={{ paddingLeft: "16px", paddingBottom: "16px" }}>
+        We recommend using 10-20 photos featuring key aspects of the home
+      </Typography>
       <Dropzone onUpload={handleUpload} />
       {formErrors.uploadedImages && (
         <FormHelperText
@@ -156,10 +158,7 @@ const MultiImageUpload = (props) => {
           </Box>
         ) : (
           <>
-            <ImageList
-              sx={{ width: "80%", height: 184 }}
-              cols={columns}
-            >
+            <ImageList sx={{ width: "80%", height: 184 }} cols={columns}>
               {uploadedImages.map((image, index) => (
                 <ImageListItem
                   key={index}
